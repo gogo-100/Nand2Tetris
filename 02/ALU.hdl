@@ -43,26 +43,29 @@ CHIP ALU {
 
     PARTS:
 	//zero the x/y input?
-	//Mux(in=true,sel=zx,a=a,b=b);
-	Not16(in=zx,out=zx1);
-	And16(a=x,b=zx1,out=x);
-	Not16(in=zy,out=zy1);
-	And16(a=y,b=zy1,out=y);
+	Mux16(a=x,b=false,sel=zx,out=x1);
+	Mux16(a=y,b=false,sel=zy,out=y1);
 	
 	//negate the x/y input?
-	Xor(a=nx,b=x[15],out=x[15]);
-	Xor(a=ny,b=y[15],out=y[15]);
+	//因为是补码，所以不能直接改符号位
+	Not16(in=x1,out=x2);
+	Inc16(in=x2,out=nx2);
+	Mux16(a=x1,b=nx2,sel=nx,out=x2);
+	
+	Not16(in=y1,out=y2);
+	Inc16(in=y2,out=ny2);
+	Mux16(a=y1,b=ny2,sel=ny,out=y2);
 	
 	// compute out = x + y (if 1) or x & y (if 0)
-	DMux(in=true,sel=f,a=a,b=b);
-	And16(a=x,b=y,out=out0);
-	Add16(a=x,b=y,out=out1);
-	And16(a=a,b=out0,out=out0);
-	And16(a=b,b=out1,out=out1);
-	Or16(a=out0,b=out1,out=out);
+	And16(a=x2,b=y2,out=out0);
+	Add16(a=x2,b=y2,out=out1);
+	Mux16(a=out0,b=out1,sel=f,out=out);
 	
 	// negate the out output?
-	Xor(a=no,b=out[15],out=out[15]);
+	Not16(in=out;out=out2);
+	Inc16(in=out2,out=nout2);
+	Mux16(a=out,b=nout2,sel=no,out=out);
+	
 	
 	//zr 1 if (out == 0), 0 otherwise
 	Or8Way(in=out[0..7],out=zr0);
@@ -71,5 +74,5 @@ CHIP ALU {
 	Not(in=zr,out=zr);
 	
     //ng 1 if (out < 0),  0 otherwise
-	and(a=true,b=out[15],out=ng);
+	And(a=true,b=out[15],out=ng);
 }
