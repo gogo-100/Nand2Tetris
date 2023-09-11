@@ -47,32 +47,31 @@ CHIP ALU {
 	Mux16(a=y,b=false,sel=zy,out=y1);
 	
 	//negate the x/y input?
-	//因为是补码，所以不能直接改符号位
-	Not16(in=x1,out=x2);
-	Inc16(in=x2,out=nx2);
-	Mux16(a=x1,b=nx2,sel=nx,out=x2);
+	//取反不等于求负数，取反就是取反
+	//不能out回in上
+	Not16(in=x1,out=nx2);
+	Mux16(a=x1,b=nx2,sel=nx,out=x3);
 	
-	Not16(in=y1,out=y2);
-	Inc16(in=y2,out=ny2);
-	Mux16(a=y1,b=ny2,sel=ny,out=y2);
+	Not16(in=y1,out=ny2);
+	Mux16(a=y1,b=ny2,sel=ny,out=y3);
 	
 	// compute out = x + y (if 1) or x & y (if 0)
-	And16(a=x2,b=y2,out=out0);
-	Add16(a=x2,b=y2,out=out1);
-	Mux16(a=out0,b=out1,sel=f,out=out);
+	And16(a=x3,b=y3,out=out0);
+	Add16(a=x3,b=y3,out=out1);
+	Mux16(a=out0,b=out1,sel=f,out=out2);
 	
 	// negate the out output?
-	Not16(in=out;out=out2);
-	Inc16(in=out2,out=nout2);
-	Mux16(a=out,b=nout2,sel=no,out=out);
+	Not16(in=out2,out=nout3);
+	Mux16(a=out2,b=nout3,sel=no,out=outtemp);
 	
 	
 	//zr 1 if (out == 0), 0 otherwise
-	Or8Way(in=out[0..7],out=zr0);
-	Or8Way(in=out[8..15],out=zr1);
-	Or(a=zr0,b=zr1,out=zr);
-	Not(in=zr,out=zr);
+	Or16Way(in=outtemp,out=zr1);
+	Not(in=zr1,out=zr);
 	
     //ng 1 if (out < 0),  0 otherwise
-	And(a=true,b=out[15],out=ng);
+	Lt0(in=outtemp,out=ng);
+	
+	//output
+	And16(a=true,b=outtemp,out=out);
 }
