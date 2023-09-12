@@ -1,11 +1,11 @@
 # Nand2Tetris
 https://www.coursera.org/learn/build-a-computer
 
-- [ ] Project 1: Building elementary logic gates like And, Or, Not, Multiplexor, and more
+- [x] Project 1: Building elementary logic gates like And, Or, Not, Multiplexor, and more
     
-- [ ] Project 2: Building a family of adder chips, culminating in the construction of an Arithmetic Logic Unit (ALU)
+- [x] Project 2: Building a family of adder chips, culminating in the construction of an Arithmetic Logic Unit (ALU)
     
-- [ ] Project 3: Building registers and memory units, culminating in the construction of a Random Access Memory (RAM)
+- [x] Project 3: Building registers and memory units, culminating in the construction of a Random Access Memory (RAM)
     
 - [ ] Project 4: Learning a machine language and using it to write some illustrative low-level programs
     
